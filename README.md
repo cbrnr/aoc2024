@@ -15,3 +15,4 @@ You can find the session cookie in the developer tools of your browser. In Safar
 ## Solutions
 
 - [Day 1](https://github.com/cbrnr/aoc2024/blob/main/01.jl)
+- [Day 2](https://github.com/cbrnr/aoc2024/blob/main/02.jl)
