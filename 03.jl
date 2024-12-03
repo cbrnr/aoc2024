@@ -1,7 +1,6 @@
 include("aoc.jl")
 
 function process_part1(code)
-    println("Processing:\n\n", code)
     s = 0
     for m in eachmatch(r"mul\((\d+),(\d+)\)", code)
         s += parse(Int, m.captures[1]) * parse(Int, m.captures[2])
@@ -10,11 +9,7 @@ function process_part1(code)
 end
 
 function process_part2(code)
-    s = 0
-    for m in eachmatch(r"^(.*)don't\(\)|do\(\)(.*)don't\(\)|do\(\)(.*)$", code)
-        s += process_part1(something(m.captures...))
-    end
-    return s
+    return process_part1(replace(code, r"don't\(\)(.*?)do\(\)"s => ""))
 end
 
 cookie = ""
