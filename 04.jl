@@ -39,28 +39,28 @@ function find_token(matrix, token)
         end
 
         # right down
-        if (col <= ncols - len + 1) & (row <= nrows - len + 1)
+        if (col <= ncols - len + 1) && (row <= nrows - len + 1)
             if String([matrix[row+i, col+i] for i in 0:len-1]) == token
                 counter += 1
             end
         end
 
         # right up
-        if (col <= ncols - len + 1) & (row >= len)
+        if (col <= ncols - len + 1) && (row >= len)
             if String([matrix[row-i, col+i] for i in 0:len-1]) == token
                 counter += 1
             end
         end
 
         # left down
-        if (col >= len) & (row <= nrows - len + 1)
+        if (col >= len) && (row <= nrows - len + 1)
             if String([matrix[row+i, col-i] for i in 0:len-1]) == token
                 counter += 1
             end
         end
 
         # left up
-        if (col >= len) & (row >= len)
+        if (col >= len) && (row >= len)
             if String([matrix[row-i, col-i] for i in 0:len-1]) == token
                 counter += 1
             end
@@ -75,7 +75,7 @@ function find_shape(matrix, token)
     counter = 0
     for idx in eachindex(CartesianIndices(matrix))
         row, col = Tuple(idx)
-        if (Δ < row < nrows - Δ + 1) & (Δ < col < ncols - Δ + 1)
+        if (Δ < row < nrows - Δ + 1) && (Δ < col < ncols - Δ + 1)
             diag1 = String([matrix[row+i, col+i] for i in -Δ:Δ])
             diag2 = String([matrix[row+i, col-i] for i in -Δ:Δ])
             if ((diag1 == token) || (diag1 == reverse(token)))
