@@ -69,11 +69,31 @@ function find_token(matrix, token)
     return counter
 end
 
+function find_shape(matrix, token)
+    nrows, ncols = size(matrix)
+    Δ = length(token) ÷ 2
+    counter = 0
+    for idx in eachindex(CartesianIndices(matrix))
+        row, col = Tuple(idx)
+        if (Δ < row < nrows - Δ + 1) & (Δ < col < ncols - Δ + 1)
+            diag1 = String([matrix[row+i, col+i] for i in -Δ:Δ])
+            diag2 = String([matrix[row+i, col-i] for i in -Δ:Δ])
+            if ((diag1 == token) || (diag1 == reverse(token)))
+                if ((diag2 == token) || (diag2 == reverse(token)))
+                    counter += 1
+                end
+            end
+        end
+    end
+    return counter
+end
+
 function process_part1(puzzle)
     find_token(puzzle, "XMAS")
 end
 
 function process_part2(puzzle)
+    find_shape(puzzle, "MAS")
 end
 
 cookie = ""
@@ -83,3 +103,6 @@ puzzle = process_input(input)
 
 result = process_part1(puzzle)
 println("Part 1: ", result)
+
+result = process_part2(puzzle)
+println("Part 2: ", result)
