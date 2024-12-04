@@ -1,7 +1,7 @@
 include("aoc.jl")
 
 function process_input(input)
-    return hcat([parse.(Int, split(row)) for row in split(input, "\n")]...)'
+    return permutedims(hcat([parse.(Int, split(row)) for row in split(input, "\n")]...))
 end
 
 function process_part1(ids)
