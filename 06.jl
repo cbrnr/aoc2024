@@ -4,35 +4,61 @@ function process_input(input)
     return permutedims(hcat(collect.(split(input, "\n"))...))
 end
 
-function get_next_pos(row, col, direction)
-    if direction == '^'
-        return row - 1, col
-    elseif direction == '>'
-        return row, col + 1
-    elseif direction == 'v'
-        return row + 1, col
-    elseif direction == '<'
-        return row, col - 1
+struct Position
+    row::Int
+    col::Int
+    dir::Char
+end
+
+function next_pos(p::Position)
+    if p.dir == '^'
+        return Position(p.row - 1, p.col, p.dir)
+    elseif p.dir == '>'
+        return Position(p.row, p.col + 1, p.dir)
+    elseif p.dir == 'v'
+        return Position(p.row + 1, p.col, p.dir)
+    elseif p.dir == '<'
+        return Position(p.row, p.col - 1, p.dir)
     end
 end
 
-function process_part1(matrix)
+function get_path(matrix)
     nrows, ncols = size(matrix)
-    row, col = Tuple(CartesianIndices(matrix)[findfirst(==('^'), matrix)])
-    visited = Set([(row, col)])
-    direction = '^'
+    dir = '^'
+    row, col = Tuple(CartesianIndices(matrix)[findfirst(==(dir), matrix)])
     turn = Dict('^' => '>', '>' => 'v', 'v' => '<', '<' => '^')
+    pos = Position(row, col, dir)  # starting position
+    path = [pos]
     while true
-        next_pos = get_next_pos(row, col, direction)
-        (!(1 <= next_pos[1] <= nrows) || !(1 <= next_pos[2] <= ncols)) && break
-        if matrix[next_pos...] == '#'
-            direction = turn[direction]
+        next = next_pos(pos)  # potential next position
+        (!(1 <= next.row <= nrows) || !(1 <= next.col <= ncols)) && break  # out of bounds
+        next in path && return nothing  # loop
+        if matrix[next.row, next.col] == '#'
+            pos = Position(pos.row, pos.col, turn[pos.dir])  # just turn
+            push!(path, pos)
         else
-            row, col = next_pos
-            push!(visited, (row, col))
+            pos = next  # move to next position
+            push!(path, pos)
         end
     end
-    return length(visited)
+    return path
+end
+
+function process_part1(matrix)
+    return length(unique((pos.row, pos.col) for pos in get_path(matrix)))
+end
+
+function process_part2(matrix)
+    positions = unique((pos.row, pos.col) for pos in get_path(matrix))[2:end]
+    counter = 0
+    for position in positions
+        m = copy(matrix)
+        m[position...] = '#'
+        if isnothing(get_path(m))
+            counter += 1
+        end
+    end
+    return counter
 end
 
 cookie = ""
@@ -42,3 +68,6 @@ matrix = process_input(input)
 
 result = process_part1(matrix)
 println("Part 1: ", result)
+
+result = process_part2(matrix)
+println("Part 2: ", result)
